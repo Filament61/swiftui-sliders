@@ -22,40 +22,41 @@ public struct RectangularPointSliderStyle<Track: View, Thumb: View>: PointSlider
         return GeometryReader { geometry in
             ZStack {
                 if self.options.contains(.interactiveTrack) {
-                    track.gesture(
-                        DragGesture(minimumDistance: 0)
-                            .onChanged { gestureValue in
-                                configuration.onEditingChanged(true)
-
-                                let computedValueX = valueFrom(
-                                    distance: gestureValue.location.x,
-                                    availableDistance: geometry.size.width,
-                                    bounds: configuration.xBounds,
-                                    step: configuration.xStep,
-                                    leadingOffset: self.thumbSize.width / 2,
-                                    trailingOffset: self.thumbSize.width / 2
-                                )
-
-                                let computedValueY = configuration.yBounds.upperBound - valueFrom(
-                                    distance: gestureValue.location.y,
-                                    availableDistance: geometry.size.height,
-                                    bounds: configuration.yBounds,
-                                    step: configuration.yStep,
-                                    leadingOffset: self.thumbSize.height / 2,
-                                    trailingOffset: self.thumbSize.height / 2
-                                )
-
-                                configuration.x.wrappedValue = computedValueX
-                                configuration.y.wrappedValue = computedValueY
-                            }
-                            .onEnded { _ in
-                                configuration.onEditingChanged(false)
-                            }
-                    )
+                    track
+                        .gesture(
+                            DragGesture(minimumDistance: 0)
+                                .onChanged { gestureValue in
+                                    configuration.onEditingChanged(true)
+                                    
+                                    let computedValueX = valueFrom(
+                                        distance: gestureValue.location.x,
+                                        availableDistance: geometry.size.width,
+                                        bounds: configuration.xBounds,
+                                        step: configuration.xStep,
+                                        leadingOffset: self.thumbSize.width / 2,
+                                        trailingOffset: self.thumbSize.width / 2
+                                    )
+                                    
+                                    let computedValueY = configuration.yBounds.upperBound - valueFrom(
+                                        distance: gestureValue.location.y,
+                                        availableDistance: geometry.size.height,
+                                        bounds: configuration.yBounds,
+                                        step: configuration.yStep,
+                                        leadingOffset: self.thumbSize.height / 2,
+                                        trailingOffset: self.thumbSize.height / 2
+                                    )
+                                    
+                                    configuration.x.wrappedValue = computedValueX
+                                    configuration.y.wrappedValue = computedValueY
+                                }
+                                .onEnded { _ in
+                                    configuration.onEditingChanged(false)
+                                }
+                        )
                 } else {
                     track
                 }
-
+                
                 ZStack {
                     self.thumb
                         .frame(width: self.thumbSize.width, height: self.thumbSize.height)

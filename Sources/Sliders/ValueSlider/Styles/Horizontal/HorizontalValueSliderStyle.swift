@@ -19,8 +19,14 @@ public struct HorizontalValueSliderStyle<Track: View, Thumb: View>: ValueSliderS
 
         return GeometryReader { geometry in
             ZStack {
-                if self.options.contains(.interactiveTrack) {
-                    track.gesture(
+                if options.hasMarkersTrack {
+                    HStack {
+                        Text("Maker")
+                    }
+                }
+                if options.hasInteractiveTrack {
+                    track
+                        .gesture(
                         DragGesture(minimumDistance: 0)
                             .onChanged { gestureValue in
                                 configuration.onEditingChanged(true)
