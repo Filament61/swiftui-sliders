@@ -24,7 +24,9 @@ extension ValueSlider {
         
         self.init(
             ValueSliderStyleConfiguration(
-                value: Binding(get: { CGFloat(value.wrappedValue.clamped(to: bounds)) }, set: { value.wrappedValue = V($0) }),
+                value: Binding(
+                    get: { CGFloat(value.wrappedValue.clamped(to: bounds)) },
+                    set: { value.wrappedValue = V($0) }),
                 bounds: CGFloat(bounds.lowerBound)...CGFloat(bounds.upperBound),
                 step: CGFloat(step),
                 onEditingChanged: onEditingChanged,
@@ -38,7 +40,9 @@ extension ValueSlider {
     public init<V>(value: Binding<V>, in bounds: ClosedRange<V> = 0...1, step: V.Stride = 1, onEditingChanged: @escaping (Bool) -> Void = { _ in }) where V : FixedWidthInteger, V.Stride : FixedWidthInteger {
         self.init(
             ValueSliderStyleConfiguration(
-                value: Binding(get: { CGFloat(value.wrappedValue.clamped(to: bounds)) }, set: { value.wrappedValue = V($0) }),
+                value: Binding(
+                    get: { CGFloat(value.wrappedValue.clamped(to: bounds)) },
+                    set: { value.wrappedValue = V($0) }),
                 bounds: CGFloat(bounds.lowerBound)...CGFloat(bounds.upperBound),
                 step: CGFloat(step),
                 onEditingChanged: onEditingChanged,
@@ -53,12 +57,9 @@ extension ValueSlider {
         
         self.init(
             ValueSliderStyleConfiguration(
-                value: Binding(get: {
-                    CGFloat(value.wrappedValue.value)
-                },
-                set: {
-                    value.wrappedValue = Measurement<Unit>(value: Double($0), unit: value.wrappedValue.unit)
-                }),
+                value: Binding(
+                    get: { CGFloat(value.wrappedValue.value) },
+                    set: { value.wrappedValue = Measurement<Unit>(value: Double($0), unit: value.wrappedValue.unit) }),
                 bounds: CGFloat(bounds.lowerBound.value)...CGFloat(bounds.upperBound.value),
                 step: CGFloat(step.value),
                 onEditingChanged: onEditingChanged,
@@ -108,7 +109,6 @@ private struct HorizontalValueSlidersPreview: View {
                         .cornerRadius(4)
                     )
                 )
-
             
             ValueSlider(value: $value4)
                 .valueSliderStyle(

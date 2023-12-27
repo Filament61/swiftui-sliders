@@ -61,7 +61,6 @@ public struct RectangularPointSliderStyle<Track: View, Thumb: View>: PointSlider
                         .frame(width: self.thumbSize.width, height: self.thumbSize.height)
                 }
                 .frame(minWidth: self.thumbInteractiveSize.width, minHeight: self.thumbInteractiveSize.height)
-
                 .position(
                     x: distanceFrom(
                         value: configuration.x.wrappedValue,
