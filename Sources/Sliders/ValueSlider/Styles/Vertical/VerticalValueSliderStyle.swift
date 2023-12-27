@@ -5,7 +5,7 @@ public struct VerticalValueSliderStyle<Track: View, Thumb: View>: ValueSliderSty
     private let thumb: Thumb
     private let thumbSize: CGSize
     private let thumbInteractiveSize: CGSize
-    private let thumbYOffset: CGFloat
+    private let thumbPositionOffset: CGFloat
     private let options: ValueSliderOptions
 
     public func makeBody(configuration: Self.Configuration) -> some View {
@@ -49,7 +49,7 @@ public struct VerticalValueSliderStyle<Track: View, Thumb: View>: ValueSliderSty
                 }
                 .frame(minWidth: self.thumbInteractiveSize.width, minHeight: self.thumbInteractiveSize.height)
                 .position(
-                    x: (geometry.size.width / 2) + thumbYOffset,
+                    x: (geometry.size.width / 2) + thumbPositionOffset,
                     y: geometry.size.height - distanceFrom(
                         value: configuration.value.wrappedValue,
                         availableDistance: geometry.size.height,
@@ -99,13 +99,13 @@ public struct VerticalValueSliderStyle<Track: View, Thumb: View>: ValueSliderSty
                 thumb: Thumb,
                 thumbSize: CGSize = .defaultThumbSize,
                 thumbInteractiveSize: CGSize = .defaultThumbInteractiveSize,
-                thumbYOffset: CGFloat = .defaultThumbYOffset,
+                thumbPositionOffset: CGFloat = .defaultThumbPositionOffset,
                 options: ValueSliderOptions = .defaultOptions) {
         self.track = track
         self.thumb = thumb
         self.thumbSize = thumbSize
         self.thumbInteractiveSize = thumbInteractiveSize
-        self.thumbYOffset = thumbYOffset
+        self.thumbPositionOffset = thumbPositionOffset
         self.options = options
     }
 }
@@ -114,13 +114,13 @@ extension VerticalValueSliderStyle where Track == DefaultVerticalValueTrack {
     public init(thumb: Thumb,
                 thumbSize: CGSize = .defaultThumbSize,
                 thumbInteractiveSize: CGSize = .defaultThumbInteractiveSize,
-                thumbYOffset: CGFloat = .defaultThumbYOffset,
+                thumbPositionOffset: CGFloat = .defaultThumbPositionOffset,
                 options: ValueSliderOptions = .defaultOptions) {
         self.track = DefaultVerticalValueTrack()
         self.thumb = thumb
         self.thumbSize = thumbSize
         self.thumbInteractiveSize = thumbInteractiveSize
-        self.thumbYOffset = thumbYOffset
+        self.thumbPositionOffset = thumbPositionOffset
         self.options = options
     }
 }
@@ -129,13 +129,13 @@ extension VerticalValueSliderStyle where Thumb == DefaultThumb {
     public init(track: Track,
                 thumbSize: CGSize = .defaultThumbSize,
                 thumbInteractiveSize: CGSize = .defaultThumbInteractiveSize,
-                thumbYOffset: CGFloat = .defaultThumbYOffset,
+                thumbPositionOffset: CGFloat = .defaultThumbPositionOffset,
                 options: ValueSliderOptions = .defaultOptions) {
         self.track = track
         self.thumb = DefaultThumb()
         self.thumbSize = thumbSize
         self.thumbInteractiveSize = thumbInteractiveSize
-        self.thumbYOffset = thumbYOffset
+        self.thumbPositionOffset = thumbPositionOffset
         self.options = options
     }
 }
@@ -143,13 +143,13 @@ extension VerticalValueSliderStyle where Thumb == DefaultThumb {
 extension VerticalValueSliderStyle where Thumb == DefaultThumb, Track == DefaultVerticalValueTrack {
     public init(thumbSize: CGSize = .defaultThumbSize,
                 thumbInteractiveSize: CGSize = .defaultThumbInteractiveSize,
-                thumbYOffset: CGFloat = .defaultThumbYOffset,
+                thumbPositionOffset: CGFloat = .defaultThumbPositionOffset,
                 options: ValueSliderOptions = .defaultOptions) {
         self.track = DefaultVerticalValueTrack()
         self.thumb = DefaultThumb()
         self.thumbSize = thumbSize
         self.thumbInteractiveSize = thumbInteractiveSize
-        self.thumbYOffset = thumbYOffset
+        self.thumbPositionOffset = thumbPositionOffset
         self.options = options
     }
 }
