@@ -94,7 +94,10 @@ private struct HorizontalValueSlidersPreview: View {
 
             ValueSlider(value: $value2)
                 .valueSliderStyle(
-                    HorizontalValueSliderStyle(thumbSize: CGSize(width: 16, height: 32))
+                    HorizontalValueSliderStyle(
+                        thumbSize: CGSize(width: 16, height: 32),
+                        thumbPositionOffset: 8.5
+                    )
                 )
             
             ValueSlider(value: $value3)
