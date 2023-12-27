@@ -11,6 +11,7 @@ public struct VerticalRangeSliderStyle<Track: View, LowerThumb: View, UpperThumb
     let lowerThumbInteractiveSize: CGSize
     let upperThumbInteractiveSize: CGSize
 
+    private let thumbPositionOffset: CGFloat
     private let options: RangeSliderOptions
 
     public func makeBody(configuration: Self.Configuration) -> some View {
@@ -33,7 +34,7 @@ public struct VerticalRangeSliderStyle<Track: View, LowerThumb: View, UpperThumb
                 }
                 .frame(minWidth: self.lowerThumbInteractiveSize.width, minHeight: self.lowerThumbInteractiveSize.height)
                 .position(
-                    x: geometry.size.width / 2,
+                    x: (geometry.size.width / 2) + thumbPositionOffset,
                     y: geometry.size.height - distanceFrom(
                         value: configuration.range.wrappedValue.lowerBound,
                         availableDistance: geometry.size.height - self.upperThumbSize.height,
@@ -86,7 +87,7 @@ public struct VerticalRangeSliderStyle<Track: View, LowerThumb: View, UpperThumb
                 }
                 .frame(minWidth: self.upperThumbInteractiveSize.width, minHeight: self.upperThumbInteractiveSize.height)
                 .position(
-                    x: geometry.size.width / 2,
+                    x: (geometry.size.width / 2) + thumbPositionOffset,
                     y: geometry.size.height - distanceFrom(
                         value: configuration.range.wrappedValue.upperBound,
                         availableDistance: geometry.size.height,
@@ -139,7 +140,15 @@ public struct VerticalRangeSliderStyle<Track: View, LowerThumb: View, UpperThumb
         .frame(minWidth: max(self.lowerThumbInteractiveSize.width, self.upperThumbInteractiveSize.width))
     }
 
-    public init(track: Track, lowerThumb: LowerThumb, upperThumb: UpperThumb, lowerThumbSize: CGSize = CGSize(width: 27, height: 27), upperThumbSize: CGSize = CGSize(width: 27, height: 27), lowerThumbInteractiveSize: CGSize = CGSize(width: 44, height: 44), upperThumbInteractiveSize: CGSize = CGSize(width: 44, height: 44), options: RangeSliderOptions = .defaultOptions) {
+    public init(track: Track, 
+                lowerThumb: LowerThumb,
+                upperThumb: UpperThumb,
+                lowerThumbSize: CGSize = .defaultThumbSize,
+                upperThumbSize: CGSize = .defaultThumbSize,
+                lowerThumbInteractiveSize: CGSize = .defaultThumbInteractiveSize,
+                upperThumbInteractiveSize: CGSize = .defaultThumbInteractiveSize,
+                thumbPositionOffset: CGFloat = .defaultThumbPositionOffset,
+                options: RangeSliderOptions = .defaultOptions) {
         self.track = track
         self.lowerThumb = lowerThumb
         self.upperThumb = upperThumb
@@ -147,12 +156,20 @@ public struct VerticalRangeSliderStyle<Track: View, LowerThumb: View, UpperThumb
         self.upperThumbSize = upperThumbSize
         self.lowerThumbInteractiveSize = lowerThumbInteractiveSize
         self.upperThumbInteractiveSize = upperThumbInteractiveSize
+        self.thumbPositionOffset = thumbPositionOffset
         self.options = options
     }
 }
 
 extension VerticalRangeSliderStyle where Track == DefaultVerticalRangeTrack {
-    public init(lowerThumb: LowerThumb, upperThumb: UpperThumb, lowerThumbSize: CGSize = CGSize(width: 27, height: 27), upperThumbSize: CGSize = CGSize(width: 27, height: 27), lowerThumbInteractiveSize: CGSize = CGSize(width: 44, height: 44), upperThumbInteractiveSize: CGSize = CGSize(width: 44, height: 44), options: RangeSliderOptions = .defaultOptions) {
+    public init(lowerThumb: LowerThumb,
+                upperThumb: UpperThumb,
+                lowerThumbSize: CGSize = .defaultThumbSize,
+                upperThumbSize: CGSize = .defaultThumbSize,
+                lowerThumbInteractiveSize: CGSize = .defaultThumbInteractiveSize,
+                upperThumbInteractiveSize: CGSize = .defaultThumbInteractiveSize,
+                thumbPositionOffset: CGFloat = .defaultThumbPositionOffset,
+               options: RangeSliderOptions = .defaultOptions) {
         self.track = DefaultVerticalRangeTrack()
         self.lowerThumb = lowerThumb
         self.upperThumb = upperThumb
@@ -160,12 +177,19 @@ extension VerticalRangeSliderStyle where Track == DefaultVerticalRangeTrack {
         self.upperThumbSize = upperThumbSize
         self.lowerThumbInteractiveSize = lowerThumbInteractiveSize
         self.upperThumbInteractiveSize = upperThumbInteractiveSize
+        self.thumbPositionOffset = thumbPositionOffset
         self.options = options
     }
 }
 
 extension VerticalRangeSliderStyle where LowerThumb == DefaultThumb, UpperThumb == DefaultThumb {
-    public init(track: Track, lowerThumbSize: CGSize = CGSize(width: 27, height: 27), upperThumbSize: CGSize = CGSize(width: 27, height: 27), lowerThumbInteractiveSize: CGSize = CGSize(width: 44, height: 44), upperThumbInteractiveSize: CGSize = CGSize(width: 44, height: 44), options: RangeSliderOptions = .defaultOptions) {
+    public init(track: Track, 
+                lowerThumbSize: CGSize = .defaultThumbSize,
+                upperThumbSize: CGSize = .defaultThumbSize,
+                lowerThumbInteractiveSize: CGSize = .defaultThumbInteractiveSize,
+                upperThumbInteractiveSize: CGSize = .defaultThumbInteractiveSize,
+                thumbPositionOffset: CGFloat = .defaultThumbPositionOffset,
+               options: RangeSliderOptions = .defaultOptions) {
         self.track = track
         self.lowerThumb = DefaultThumb()
         self.upperThumb = DefaultThumb()
@@ -173,12 +197,18 @@ extension VerticalRangeSliderStyle where LowerThumb == DefaultThumb, UpperThumb 
         self.upperThumbSize = upperThumbSize
         self.lowerThumbInteractiveSize = lowerThumbInteractiveSize
         self.upperThumbInteractiveSize = upperThumbInteractiveSize
+        self.thumbPositionOffset = thumbPositionOffset
         self.options = options
     }
 }
 
 extension VerticalRangeSliderStyle where LowerThumb == DefaultThumb, UpperThumb == DefaultThumb, Track == DefaultVerticalRangeTrack {
-    public init(lowerThumbSize: CGSize = CGSize(width: 27, height: 27), upperThumbSize: CGSize = CGSize(width: 27, height: 27), lowerThumbInteractiveSize: CGSize = CGSize(width: 44, height: 44), upperThumbInteractiveSize: CGSize = CGSize(width: 44, height: 44), options: RangeSliderOptions = .defaultOptions) {
+    public init(lowerThumbSize: CGSize = .defaultThumbSize,
+                upperThumbSize: CGSize = .defaultThumbSize,
+                lowerThumbInteractiveSize: CGSize = .defaultThumbInteractiveSize,
+                upperThumbInteractiveSize: CGSize = .defaultThumbInteractiveSize,
+                thumbPositionOffset: CGFloat = .defaultThumbPositionOffset,
+                options: RangeSliderOptions = .defaultOptions) {
         self.track = DefaultVerticalRangeTrack()
         self.lowerThumb = DefaultThumb()
         self.upperThumb = DefaultThumb()
@@ -186,6 +216,7 @@ extension VerticalRangeSliderStyle where LowerThumb == DefaultThumb, UpperThumb 
         self.upperThumbSize = upperThumbSize
         self.lowerThumbInteractiveSize = lowerThumbInteractiveSize
         self.upperThumbInteractiveSize = upperThumbInteractiveSize
+        self.thumbPositionOffset = thumbPositionOffset
         self.options = options
     }
 }

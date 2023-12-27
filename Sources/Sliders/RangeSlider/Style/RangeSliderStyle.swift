@@ -3,7 +3,7 @@ import SwiftUI
 /// Defines the implementation of all `RangeSlider` instances within a view
 /// hierarchy.
 ///
-/// To configure the current `RangeSlider` for a view hiearchy, use the
+/// To configure the current `RangeSlider` for a view hierarchy, use the
 /// `.valueSliderStyle()` modifier.
 @available(iOS 13.0, OSX 10.15, tvOS 13.0, watchOS 6.0, *)
 public protocol RangeSliderStyle {

@@ -14,6 +14,10 @@ public extension CGSize {
     static let defaultThumbInteractiveSize : CGSize = CGSize(width: 44, height: 44)
 }
 
+public extension CGFloat {
+    static let defaultThumbPositionOffset: CGFloat = 0
+}
+
 struct DefaultThumb_Previews: PreviewProvider {
     static var previews: some View {
         DefaultThumb()
