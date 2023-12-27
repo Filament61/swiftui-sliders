@@ -1,36 +1,27 @@
 import SwiftUI
 
 public struct ValueSliderOptions: OptionSet {
-    public let rawValue: Int
-    public let makers: Set<Maker>
-
-    public static let interactiveTrack = ValueSliderOptions(rawValue: 1 << 0)
-    public static let defaultOptions: ValueSliderOptions = [ ]
+    public static let defaultOptions: ValueSliderOptions = []
     
+    public let rawValue: Int
+
     public init(rawValue: Int) {
         self.rawValue = rawValue
-        self.makers = Set([ ])
     }
-    
+}
+
+// MARK: Option : interactiveTrack
+extension ValueSliderOptions {
+    public static let interactiveTrack = ValueSliderOptions(rawValue: 1 << 0)
     var hasInteractiveTrack: Bool {
         self.contains(.interactiveTrack)
     }
-    
 }
 
+// MARK: Option : markerTrack
 extension ValueSliderOptions {
-    
-    public typealias Maker = Int
-
-    public static let markerTrack = ValueSliderOptions(rawValue: 1 << 1, makers: [ ])
-    
-    public init(rawValue: Int, makers: Set<Maker>) {
-        self.rawValue = rawValue
-        self.makers = makers
-    }
-
+    public static let markerTrack = ValueSliderOptions(rawValue: 1 << 1)
     var hasMarkersTrack: Bool {
-        self.contains(Self.markerTrack)
+        self.contains(.markerTrack)
     }
-    
 }

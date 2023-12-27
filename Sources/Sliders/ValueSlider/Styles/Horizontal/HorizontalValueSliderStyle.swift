@@ -5,7 +5,11 @@ public struct HorizontalValueSliderStyle<Track: View, Thumb: View>: ValueSliderS
     private let thumb: Thumb
     private let thumbSize: CGSize
     private let thumbInteractiveSize: CGSize
+    private let thumbYOffset: CGFloat
     private let options: ValueSliderOptions
+    
+    private let markers: [CGFloat] = [0, 0.33, 0.66, 1]
+    
 
     public func makeBody(configuration: Self.Configuration) -> some View {
         let track = self.track
@@ -20,9 +24,26 @@ public struct HorizontalValueSliderStyle<Track: View, Thumb: View>: ValueSliderS
         return GeometryReader { geometry in
             ZStack {
                 if options.hasMarkersTrack {
-                    HStack {
-                        Text("Maker")
+                    ForEach(markers, id: \.self) { marker in
+                        ZStack {
+                            DefaultTickMark()
+                            //                        Rectangle()
+                            //                            .fill(Color.secondary.opacity(0.25))
+                                .frame(width: CGSize.defaultTickMarkSize.width, height: CGSize.defaultTickMarkSize.height)
+                                .position(
+                                    x: distanceFrom(
+                                        value: marker,
+                                        availableDistance: geometry.size.width,
+                                        bounds: configuration.bounds,
+                                        leadingOffset: self.thumbSize.width / 2,
+                                        trailingOffset: self.thumbSize.width / 2
+                                    ),
+                                    y: geometry.size.height / 2
+                                )
+                            
+                        }
                     }
+    //                .frame(minWidth: self.thumbInteractiveSize.width, minHeight: self.thumbInteractiveSize.height)
                 }
                 if options.hasInteractiveTrack {
                     track
@@ -47,7 +68,6 @@ public struct HorizontalValueSliderStyle<Track: View, Thumb: View>: ValueSliderS
                 } else {
                     track
                 }
-
                 ZStack {
                     self.thumb
                         .frame(width: self.thumbSize.width, height: self.thumbSize.height)
@@ -61,7 +81,7 @@ public struct HorizontalValueSliderStyle<Track: View, Thumb: View>: ValueSliderS
                         leadingOffset: self.thumbSize.width / 2,
                         trailingOffset: self.thumbSize.width / 2
                     ),
-                    y: geometry.size.height / 2
+                    y: (geometry.size.height / 2) + thumbYOffset
                 )
                 .gesture(
                     DragGesture(minimumDistance: 0)
@@ -100,41 +120,61 @@ public struct HorizontalValueSliderStyle<Track: View, Thumb: View>: ValueSliderS
         .frame(minHeight: self.thumbInteractiveSize.height)
     }
 
-    public init(track: Track, thumb: Thumb, thumbSize: CGSize = CGSize(width: 27, height: 27), thumbInteractiveSize: CGSize = CGSize(width: 44, height: 44), options: ValueSliderOptions = .defaultOptions) {
+    public init(track: Track,
+                thumb: Thumb,
+                thumbSize: CGSize = .defaultThumbSize,
+                thumbInteractiveSize: CGSize = .defaultThumbInteractiveSize,
+                thumbYOffset: CGFloat = .defaultThumbYOffset,
+                options: ValueSliderOptions = .defaultOptions) {
         self.track = track
         self.thumb = thumb
         self.thumbSize = thumbSize
         self.thumbInteractiveSize = thumbInteractiveSize
+        self.thumbYOffset = thumbYOffset
         self.options = options
     }
 }
 
 extension HorizontalValueSliderStyle where Track == DefaultHorizontalValueTrack {
-    public init(thumb: Thumb, thumbSize: CGSize = CGSize(width: 27, height: 27), thumbInteractiveSize: CGSize = CGSize(width: 44, height: 44), options: ValueSliderOptions = .defaultOptions) {
+    public init(thumb: Thumb,
+                thumbSize: CGSize = .defaultThumbSize,
+                thumbInteractiveSize: CGSize = .defaultThumbInteractiveSize,
+                thumbYOffset: CGFloat = .defaultThumbYOffset,
+                options: ValueSliderOptions = .defaultOptions) {
         self.track = DefaultHorizontalValueTrack()
         self.thumb = thumb
         self.thumbSize = thumbSize
         self.thumbInteractiveSize = thumbInteractiveSize
+        self.thumbYOffset = thumbYOffset
         self.options = options
     }
 }
 
 extension HorizontalValueSliderStyle where Thumb == DefaultThumb {
-    public init(track: Track, thumbSize: CGSize = CGSize(width: 27, height: 27), thumbInteractiveSize: CGSize = CGSize(width: 44, height: 44), options: ValueSliderOptions = .defaultOptions) {
+    public init(track: Track, 
+                thumbSize: CGSize = .defaultThumbSize,
+                thumbInteractiveSize: CGSize = .defaultThumbInteractiveSize,
+                thumbYOffset: CGFloat = .defaultThumbYOffset,
+                options: ValueSliderOptions = .defaultOptions) {
         self.track = track
         self.thumb = DefaultThumb()
         self.thumbSize = thumbSize
         self.thumbInteractiveSize = thumbInteractiveSize
+        self.thumbYOffset = thumbYOffset
         self.options = options
     }
 }
 
 extension HorizontalValueSliderStyle where Thumb == DefaultThumb, Track == DefaultHorizontalValueTrack {
-    public init(thumbSize: CGSize = CGSize(width: 27, height: 27), thumbInteractiveSize: CGSize = CGSize(width: 44, height: 44), options: ValueSliderOptions = .defaultOptions) {
+    public init(thumbSize: CGSize = .defaultThumbSize,
+                thumbInteractiveSize: CGSize = .defaultThumbInteractiveSize,
+                thumbYOffset: CGFloat = .defaultThumbYOffset,
+                options: ValueSliderOptions = .defaultOptions) {
         self.track = DefaultHorizontalValueTrack()
         self.thumb = DefaultThumb()
         self.thumbSize = thumbSize
         self.thumbInteractiveSize = thumbInteractiveSize
+        self.thumbYOffset = thumbYOffset
         self.options = options
     }
 }

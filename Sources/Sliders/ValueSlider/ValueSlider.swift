@@ -53,12 +53,13 @@ extension ValueSlider {
         
         self.init(
             ValueSliderStyleConfiguration(
-                value: Binding(get: {
-                    CGFloat(value.wrappedValue.value)
-                },
-                set: {
-                    value.wrappedValue = Measurement<Unit>(value: Double($0), unit: value.wrappedValue.unit)
-                }),
+                value: Binding(
+                    get: {
+                        CGFloat(value.wrappedValue.value)
+                    },
+                    set: {
+                        value.wrappedValue = Measurement<Unit>(value: Double($0), unit: value.wrappedValue.unit)
+                    }),
                 bounds: CGFloat(bounds.lowerBound.value)...CGFloat(bounds.upperBound.value),
                 step: CGFloat(step.value),
                 onEditingChanged: onEditingChanged,
@@ -93,7 +94,10 @@ private struct HorizontalValueSlidersPreview: View {
 
             ValueSlider(value: $value2)
                 .valueSliderStyle(
-                    HorizontalValueSliderStyle(thumbSize: CGSize(width: 16, height: 32))
+                    HorizontalValueSliderStyle(
+                        thumbSize: CGSize(width: 16, height: 32),
+                        options: [.interactiveTrack, .markerTrack]
+                    )
                 )
             
             ValueSlider(value: $value3)
@@ -105,8 +109,7 @@ private struct HorizontalValueSlidersPreview: View {
                             endPoint: .trailing
                         )
                         .frame(height: 8)
-                        .cornerRadius(4)
-                    )
+                        .cornerRadius(4)                    )
                 )
 
             
@@ -121,7 +124,7 @@ private struct HorizontalValueSlidersPreview: View {
                         .frame(height: 6)
                         .cornerRadius(3),
                         thumbSize: CGSize(width: 48, height: 16),
-                        options: .interactiveTrack
+                        options: [.interactiveTrack, .markerTrack]
                     )
                 )
             
