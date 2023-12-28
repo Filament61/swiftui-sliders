@@ -20,7 +20,7 @@ public struct VerticalValueSliderStyle<Track: View, Thumb: View>: ValueSliderSty
 
         return GeometryReader { geometry in
             ZStack {
-                if self.options.contains(.interactiveTrack) {
+                if self.options.hasInteractiveTrack {
                     track.gesture(
                         DragGesture(minimumDistance: 0)
                             .onChanged { gestureValue in
