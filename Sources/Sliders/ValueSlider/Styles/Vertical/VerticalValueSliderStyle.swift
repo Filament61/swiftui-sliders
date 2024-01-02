@@ -9,7 +9,7 @@ public struct VerticalValueSliderStyle<Track: View, Thumb: View>: ValueSliderSty
     private let options: ValueSliderOptions
 
     public func makeBody(configuration: Self.Configuration) -> some View {
-        let tickMarks = calculateTickMarks(bounds: configuration.bounds)
+        let tickMarks = DefaultTickMark.calculate(bounds: configuration.bounds)
         let track = self.track
             .environment(\.trackValue, configuration.value.wrappedValue)
             .environment(\.valueTrackConfiguration, ValueTrackConfiguration(
@@ -157,23 +157,6 @@ public struct VerticalValueSliderStyle<Track: View, Thumb: View>: ValueSliderSty
             }
         }
         .zIndex(0)
-    }
-    
-    private func calculateTickMarks(bounds: ClosedRange<CGFloat>) -> [CGFloat] {
-        let lower: CGFloat = bounds.lowerBound
-        let upper: CGFloat = bounds.upperBound
-        var marks = [CGFloat]()
-        guard DefaultTickMark.number > 0 else { return [] }
-        if DefaultTickMark.number == 1 {
-            let mark = (upper - lower) / 2
-            marks.append(mark)
-        } else {
-            for mark in stride(from: lower, through: upper,
-                                 by: (upper - lower) / CGFloat(DefaultTickMark.number - 1)) {
-                marks.append(mark)
-            }
-        }
-        return marks
     }
     
 }
