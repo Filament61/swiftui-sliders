@@ -17,3 +17,19 @@ extension ValueSliderOptions {
         self.contains(.interactiveTrack)
     }
 }
+
+// MARK: UpperTickMarkOption
+extension ValueSliderOptions {
+    public static let upperTickMark = ValueSliderOptions(rawValue: 1 << 1)
+    var hasUpperTickMark: Bool {
+        self.contains(.upperTickMark)
+    }
+}
+
+// MARK: LowerTickMarkOption
+extension ValueSliderOptions {
+    public static let lowerTickMark = ValueSliderOptions(rawValue: 1 << 2)
+    var hasLowerTickMark: Bool {
+        self.contains(.lowerTickMark)
+    }
+}
