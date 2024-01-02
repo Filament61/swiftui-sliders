@@ -15,8 +15,22 @@ public struct DefaultTickMark: View {
     }
 }
 
+extension DefaultTickMark {
+    static var size: CGSize = .defaultTickMarkSize
+    static var position: CGFloat = .defaultTickMarkPosition
+    static var number: Int = .defaultTickMarkNumber
+}
+
 public extension CGSize {
-    static let defaultTickMarkSize: CGSize = CGSize(width: 3, height: 6)
+    static let defaultTickMarkSize: CGSize = CGSize(width: 2, height: 6)
+}
+
+public extension CGFloat {
+    static let defaultTickMarkPosition: CGFloat = 4.5
+}
+
+public extension Int {
+    static let defaultTickMarkNumber: Int = 5
 }
 
 struct DefaultTickMark_Previews: PreviewProvider {
