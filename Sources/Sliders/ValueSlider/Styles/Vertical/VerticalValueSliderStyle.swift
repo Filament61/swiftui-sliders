@@ -9,6 +9,7 @@ public struct VerticalValueSliderStyle<Track: View, Thumb: View>: ValueSliderSty
     private let options: ValueSliderOptions
 
     public func makeBody(configuration: Self.Configuration) -> some View {
+        let tickMarks = calculateTickMarks(bounds: configuration.bounds)
         let track = self.track
             .environment(\.trackValue, configuration.value.wrappedValue)
             .environment(\.valueTrackConfiguration, ValueTrackConfiguration(
@@ -20,25 +21,11 @@ public struct VerticalValueSliderStyle<Track: View, Thumb: View>: ValueSliderSty
 
         return GeometryReader { geometry in
             ZStack {
+                if self.options.hasUpperTickMark || self.options.hasLowerTickMark {
+                    tickMark(tickMarks, geometry: geometry, configuration: configuration)
+                }
                 if self.options.hasInteractiveTrack {
-                    track.gesture(
-                        DragGesture(minimumDistance: 0)
-                            .onChanged { gestureValue in
-                                configuration.onEditingChanged(true)
-                                let computedValue = configuration.bounds.upperBound - valueFrom(
-                                    distance: gestureValue.location.y,
-                                    availableDistance: geometry.size.height,
-                                    bounds: configuration.bounds,
-                                    step: configuration.step,
-                                    leadingOffset: self.thumbSize.height / 2,
-                                    trailingOffset: self.thumbSize.height / 2
-                                )
-                                configuration.value.wrappedValue = computedValue
-                            }
-                            .onEnded { _ in
-                                configuration.onEditingChanged(false)
-                            }
-                    )
+                    interactiveTrack(geometry: geometry, configuration: configuration)
                 } else {
                     track
                 }
@@ -108,6 +95,87 @@ public struct VerticalValueSliderStyle<Track: View, Thumb: View>: ValueSliderSty
         self.thumbPositionOffset = thumbPositionOffset
         self.options = options
     }
+    
+    @ViewBuilder
+    private func interactiveTrack(geometry: GeometryProxy,
+                                  configuration: Self.Configuration) -> some View {
+        track.gesture(
+            DragGesture(minimumDistance: 0)
+                .onChanged { gestureValue in
+                    configuration.onEditingChanged(true)
+                    let computedValue = configuration.bounds.upperBound - valueFrom(
+                        distance: gestureValue.location.y,
+                        availableDistance: geometry.size.height,
+                        bounds: configuration.bounds,
+                        step: configuration.step,
+                        leadingOffset: self.thumbSize.height / 2,
+                        trailingOffset: self.thumbSize.height / 2
+                    )
+                    configuration.value.wrappedValue = computedValue
+                }
+                .onEnded { _ in
+                    configuration.onEditingChanged(false)
+                }
+        )
+    }
+    
+    @ViewBuilder
+    private func tickMark(_ tickMarks: [CGFloat],
+                          geometry: GeometryProxy,
+                          configuration: Self.Configuration) -> some View {
+        ZStack {
+            ForEach(tickMarks, id: \.self) { tickMark in
+                if self.options.hasUpperTickMark {
+                    DefaultTickMark()
+                        .frame(width: DefaultTickMark.size.height, height: DefaultTickMark.size.width)
+                        .position(
+                            x: (geometry.size.width / 2) - DefaultTickMark.position,
+                            y: distanceFrom(
+                                value: tickMark,
+                                availableDistance: geometry.size.height,
+                                bounds: configuration.bounds,
+                                leadingOffset: self.thumbSize.height / 2,
+                                trailingOffset: self.thumbSize.height / 2
+                            )
+                        )
+                }
+                
+                if self.options.hasLowerTickMark {
+                    DefaultTickMark()
+                        .frame(width: DefaultTickMark.size.height, height: DefaultTickMark.size.width)
+                        .position(
+                            x: (geometry.size.width / 2) + DefaultTickMark.position,
+                            y: distanceFrom(
+                                value: tickMark,
+                                availableDistance: geometry.size.height,
+                                bounds: configuration.bounds,
+                                leadingOffset: self.thumbSize.height / 2,
+                                trailingOffset: self.thumbSize.height / 2
+                            )
+                        )
+                }
+            }
+        }
+        .zIndex(0)
+    }
+    
+    private func calculateTickMarks(bounds: ClosedRange<CGFloat>) -> [CGFloat] {
+        let lower: CGFloat = bounds.lowerBound
+        let upper: CGFloat = bounds.upperBound
+        var marks = [CGFloat]()
+        guard DefaultTickMark.number > 0 else { return [] }
+        if DefaultTickMark.number == 1 {
+            let mark = (upper - lower) / 2
+            marks.append(mark)
+        } else {
+            for mark in stride(from: lower, through: upper,
+                                 by: (upper - lower) / CGFloat(DefaultTickMark.number - 1)) {
+                marks.append(mark)
+            }
+        }
+        return marks
+    }
+    
 }
 
 extension VerticalValueSliderStyle where Track == DefaultVerticalValueTrack {

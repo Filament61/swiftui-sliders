@@ -9,6 +9,7 @@ public struct HorizontalValueSliderStyle<Track: View, Thumb: View>: ValueSliderS
     private let options: ValueSliderOptions
 
     public func makeBody(configuration: Self.Configuration) -> some View {
+        let tickMarks = calculate(bounds: configuration.bounds)
         let track = self.track
             .environment(\.trackValue, configuration.value.wrappedValue)
             .environment(\.valueTrackConfiguration, ValueTrackConfiguration(
@@ -20,29 +21,15 @@ public struct HorizontalValueSliderStyle<Track: View, Thumb: View>: ValueSliderS
 
         return GeometryReader { geometry in
             ZStack {
+                if self.options.hasUpperTickMark || self.options.hasLowerTickMark {
+                    tickMark(tickMarks, geometry: geometry, configuration: configuration)
+                }
                 if self.options.hasInteractiveTrack {
-                    track.gesture(
-                        DragGesture(minimumDistance: 0)
-                            .onChanged { gestureValue in
-                                configuration.onEditingChanged(true)
-                                let computedValue = valueFrom(
-                                    distance: gestureValue.location.x,
-                                    availableDistance: geometry.size.width,
-                                    bounds: configuration.bounds,
-                                    step: configuration.step,
-                                    leadingOffset: self.thumbSize.width / 2,
-                                    trailingOffset: self.thumbSize.width / 2
-                                )
-                                configuration.value.wrappedValue = computedValue
-                            }
-                            .onEnded { _ in
-                                configuration.onEditingChanged(false)
-                            }
-                    )
+                    interactiveTrack(geometry: geometry, configuration: configuration)
                 } else {
                     track
                 }
-
+                
                 ZStack {
                     self.thumb
                         .frame(width: self.thumbSize.width, height: self.thumbSize.height)
@@ -90,9 +77,9 @@ public struct HorizontalValueSliderStyle<Track: View, Thumb: View>: ValueSliderS
                         }
                 )
             }
-            .frame(height: geometry.size.height)
         }
         .frame(minHeight: self.thumbInteractiveSize.height)
+        
     }
 
     public init(track: Track,
@@ -108,6 +95,87 @@ public struct HorizontalValueSliderStyle<Track: View, Thumb: View>: ValueSliderS
         self.thumbPositionOffset = thumbPositionOffset
         self.options = options
     }
+    
+    @ViewBuilder
+    private func interactiveTrack(geometry: GeometryProxy, 
+                                  configuration: Self.Configuration) -> some View {
+        track.gesture(
+            DragGesture(minimumDistance: 0)
+                .onChanged { gestureValue in
+                    configuration.onEditingChanged(true)
+                    let computedValue = valueFrom(
+                        distance: gestureValue.location.x,
+                        availableDistance: geometry.size.width,
+                        bounds: configuration.bounds,
+                        step: configuration.step,
+                        leadingOffset: self.thumbSize.width / 2,
+                        trailingOffset: self.thumbSize.width / 2
+                    )
+                    configuration.value.wrappedValue = computedValue
+                }
+                .onEnded { _ in
+                    configuration.onEditingChanged(false)
+                }
+        )
+    }
+    
+    @ViewBuilder
+    private func tickMark(_ tickMarks: [CGFloat], 
+                          geometry: GeometryProxy,
+                          configuration: Self.Configuration) -> some View {
+        ZStack {
+            ForEach(tickMarks, id: \.self) { tickMark in
+                if self.options.hasUpperTickMark {
+                    DefaultTickMark()
+                        .frame(width: DefaultTickMark.size.width, height: DefaultTickMark.size.height)
+                        .position(
+                            x: distanceFrom(
+                                value: tickMark,
+                                availableDistance: geometry.size.width,
+                                bounds: configuration.bounds,
+                                leadingOffset: self.thumbSize.width / 2,
+                                trailingOffset: self.thumbSize.width / 2
+                            ),
+                            y: (geometry.size.height / 2) - DefaultTickMark.position // 4,5 = (track.height + tickMark.height) / 2
+                        )
+                }
+                
+                if self.options.hasLowerTickMark {
+                    DefaultTickMark()
+                        .frame(width: DefaultTickMark.size.width, height: DefaultTickMark.size.height)
+                        .position(
+                            x: distanceFrom(
+                                value: tickMark,
+                                availableDistance: geometry.size.width,
+                                bounds: configuration.bounds,
+                                leadingOffset: self.thumbSize.width / 2,
+                                trailingOffset: self.thumbSize.width / 2
+                            ),
+                            y: (geometry.size.height / 2) + DefaultTickMark.position // 4,5 = (track.height + tickMark.height) / 2
+                        )
+                }
+            }
+        }
+        .zIndex(0)
+    }
+    
+    private func calculate(bounds: ClosedRange<CGFloat>) -> [CGFloat] {
+        let lower: CGFloat = bounds.lowerBound
+        let upper: CGFloat = bounds.upperBound
+        var marks = [CGFloat]()
+        guard DefaultTickMark.number > 0 else { return [] }
+        if DefaultTickMark.number == 1 {
+            let mark = (upper - lower) / 2
+            marks.append(mark)
+        } else {
+            for mark in stride(from: lower, through: upper,
+                                 by: (upper - lower) / CGFloat(DefaultTickMark.number - 1)) {
+                marks.append(mark)
+            }
+        }
+        return marks
+    }
+    
 }
 
 extension HorizontalValueSliderStyle where Track == DefaultHorizontalValueTrack {
