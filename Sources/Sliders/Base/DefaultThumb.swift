@@ -15,7 +15,7 @@ public extension CGSize {
 }
 
 public extension CGFloat {
-    static let defaultThumbYOffset: CGFloat = 0
+    static let defaultThumbPositionOffset: CGFloat = 0
 }
 
 struct DefaultThumb_Previews: PreviewProvider {
