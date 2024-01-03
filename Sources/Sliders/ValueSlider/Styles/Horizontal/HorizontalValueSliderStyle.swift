@@ -18,18 +18,36 @@ public struct HorizontalValueSliderStyle<Track: View, Thumb: View>: ValueSliderS
                 trailingOffset: self.thumbSize.width / 2)
             )
             .accentColor(Color.accentColor)
-
+        
         return GeometryReader { geometry in
             ZStack {
                 if self.options.hasUpperTickMark || self.options.hasLowerTickMark {
                     tickMark(tickMarks, geometry: geometry, configuration: configuration)
                 }
                 if self.options.hasInteractiveTrack {
-                    interactiveTrack(geometry: geometry, configuration: configuration)
+//                    Cet appel ne fonctionne pas correctement. La View en retour n'anime pas la piste alors que le code est strictement identique...
+//                    interactiveTrack(geometry: geometry, configuration: configuration)
+                    track.gesture(
+                        DragGesture(minimumDistance: 0)
+                            .onChanged { gestureValue in
+                                configuration.onEditingChanged(true)
+                                let computedValue = valueFrom(
+                                    distance: gestureValue.location.x,
+                                    availableDistance: geometry.size.width,
+                                    bounds: configuration.bounds,
+                                    step: configuration.step,
+                                    leadingOffset: self.thumbSize.width / 2,
+                                    trailingOffset: self.thumbSize.width / 2
+                                )
+                                configuration.value.wrappedValue = computedValue
+                            }
+                            .onEnded { _ in
+                                configuration.onEditingChanged(false)
+                            }
+                    )
                 } else {
                     track
                 }
-                
                 ZStack {
                     self.thumb
                         .frame(width: self.thumbSize.width, height: self.thumbSize.height)
@@ -96,28 +114,28 @@ public struct HorizontalValueSliderStyle<Track: View, Thumb: View>: ValueSliderS
         self.options = options
     }
     
-    @ViewBuilder
-    private func interactiveTrack(geometry: GeometryProxy, 
-                                  configuration: Self.Configuration) -> some View {
-        track.gesture(
-            DragGesture(minimumDistance: 0)
-                .onChanged { gestureValue in
-                    configuration.onEditingChanged(true)
-                    let computedValue = valueFrom(
-                        distance: gestureValue.location.x,
-                        availableDistance: geometry.size.width,
-                        bounds: configuration.bounds,
-                        step: configuration.step,
-                        leadingOffset: self.thumbSize.width / 2,
-                        trailingOffset: self.thumbSize.width / 2
-                    )
-                    configuration.value.wrappedValue = computedValue
-                }
-                .onEnded { _ in
-                    configuration.onEditingChanged(false)
-                }
-        )
-    }
+    //  Cet appel ne fonctionne pas correctement. La View en retour n'anime pas la piste alors que le code est strictement identique... Voir plus haut !
+//private func interactiveTrack(geometry: GeometryProxy,
+//                                  configuration: Self.Configuration) -> some View {
+//        track.gesture(
+//            DragGesture(minimumDistance: 0)
+//                .onChanged { gestureValue in
+//                    configuration.onEditingChanged(true)
+//                    let computedValue = valueFrom(
+//                        distance: gestureValue.location.x,
+//                        availableDistance: geometry.size.width,
+//                        bounds: configuration.bounds,
+//                        step: configuration.step,
+//                        leadingOffset: self.thumbSize.width / 2,
+//                        trailingOffset: self.thumbSize.width / 2
+//                    )
+//                    configuration.value.wrappedValue = computedValue
+//                }
+//                .onEnded { _ in
+//                    configuration.onEditingChanged(false)
+//                }
+//        )
+//    }
     
     @ViewBuilder
     private func tickMark(_ tickMarks: [CGFloat], 
