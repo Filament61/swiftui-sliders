@@ -24,7 +24,9 @@ extension ValueSlider {
         
         self.init(
             ValueSliderStyleConfiguration(
-                value: Binding(get: { CGFloat(value.wrappedValue.clamped(to: bounds)) }, set: { value.wrappedValue = V($0) }),
+                value: Binding(
+                    get: { CGFloat(value.wrappedValue.clamped(to: bounds)) },
+                    set: { value.wrappedValue = V($0) }),
                 bounds: CGFloat(bounds.lowerBound)...CGFloat(bounds.upperBound),
                 step: CGFloat(step),
                 onEditingChanged: onEditingChanged,
@@ -38,7 +40,9 @@ extension ValueSlider {
     public init<V>(value: Binding<V>, in bounds: ClosedRange<V> = 0...1, step: V.Stride = 1, onEditingChanged: @escaping (Bool) -> Void = { _ in }) where V : FixedWidthInteger, V.Stride : FixedWidthInteger {
         self.init(
             ValueSliderStyleConfiguration(
-                value: Binding(get: { CGFloat(value.wrappedValue.clamped(to: bounds)) }, set: { value.wrappedValue = V($0) }),
+                value: Binding(
+                    get: { CGFloat(value.wrappedValue.clamped(to: bounds)) },
+                    set: { value.wrappedValue = V($0) }),
                 bounds: CGFloat(bounds.lowerBound)...CGFloat(bounds.upperBound),
                 step: CGFloat(step),
                 onEditingChanged: onEditingChanged,
@@ -54,12 +58,8 @@ extension ValueSlider {
         self.init(
             ValueSliderStyleConfiguration(
                 value: Binding(
-                    get: {
-                        CGFloat(value.wrappedValue.value)
-                    },
-                    set: {
-                        value.wrappedValue = Measurement<Unit>(value: Double($0), unit: value.wrappedValue.unit)
-                    }),
+                    get: { CGFloat(value.wrappedValue.value) },
+                    set: { value.wrappedValue = Measurement<Unit>(value: Double($0), unit: value.wrappedValue.unit) }),
                 bounds: CGFloat(bounds.lowerBound.value)...CGFloat(bounds.upperBound.value),
                 step: CGFloat(step.value),
                 onEditingChanged: onEditingChanged,
@@ -96,7 +96,8 @@ private struct HorizontalValueSlidersPreview: View {
                 .valueSliderStyle(
                     HorizontalValueSliderStyle(
                         thumbSize: CGSize(width: 16, height: 32),
-                        options: [.interactiveTrack, .markerTrack]
+                        thumbPositionOffset: 8.5,
+                        options: [.interactiveTrack, .upperTickMark]
                     )
                 )
             
@@ -109,9 +110,9 @@ private struct HorizontalValueSlidersPreview: View {
                             endPoint: .trailing
                         )
                         .frame(height: 8)
-                        .cornerRadius(4)                    )
+                        .cornerRadius(4)
+                    )
                 )
-
             
             ValueSlider(value: $value4)
                 .valueSliderStyle(
@@ -124,7 +125,7 @@ private struct HorizontalValueSlidersPreview: View {
                         .frame(height: 6)
                         .cornerRadius(3),
                         thumbSize: CGSize(width: 48, height: 16),
-                        options: [.interactiveTrack, .markerTrack]
+                        options: .interactiveTrack
                     )
                 )
             
@@ -159,7 +160,8 @@ private struct VerticalValueSlidersPreview: View {
             
             ValueSlider(value: $value2)
                 .valueSliderStyle(
-                    VerticalValueSliderStyle(thumbSize: CGSize(width: 16, height: 32))
+                    VerticalValueSliderStyle(thumbSize: CGSize(width: 16, height: 32),
+                                             options: [.interactiveTrack, .upperTickMark])
                 )
             
             ValueSlider(value: $value3)

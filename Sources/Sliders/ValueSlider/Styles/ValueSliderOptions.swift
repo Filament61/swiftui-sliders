@@ -10,7 +10,7 @@ public struct ValueSliderOptions: OptionSet {
     }
 }
 
-// MARK: Option : interactiveTrack
+// MARK: InteractiveTrackOption
 extension ValueSliderOptions {
     public static let interactiveTrack = ValueSliderOptions(rawValue: 1 << 0)
     var hasInteractiveTrack: Bool {
@@ -18,10 +18,18 @@ extension ValueSliderOptions {
     }
 }
 
-// MARK: Option : markerTrack
+// MARK: UpperTickMarkOption
 extension ValueSliderOptions {
-    public static let markerTrack = ValueSliderOptions(rawValue: 1 << 1)
-    var hasMarkersTrack: Bool {
-        self.contains(.markerTrack)
+    public static let upperTickMark = ValueSliderOptions(rawValue: 1 << 1)
+    var hasUpperTickMark: Bool {
+        self.contains(.upperTickMark)
+    }
+}
+
+// MARK: LowerTickMarkOption
+extension ValueSliderOptions {
+    public static let lowerTickMark = ValueSliderOptions(rawValue: 1 << 2)
+    var hasLowerTickMark: Bool {
+        self.contains(.lowerTickMark)
     }
 }
